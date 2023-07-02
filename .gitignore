@@ -1,5 +1,6 @@
 *.bk
 
 **/**/chatgtp-api-key.txt
+**/**/docker-hub-pass.txt
 **/**/node_modules
 
