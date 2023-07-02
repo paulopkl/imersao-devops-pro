@@ -3,4 +3,4 @@
 **/**/chatgtp-api-key.txt
 **/**/docker-hub-pass.txt
 **/**/node_modules
-
+**/**/k8s_bk

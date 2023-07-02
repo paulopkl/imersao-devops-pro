@@ -51,12 +51,16 @@ spec:
       app: chatservice-microsservice
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
       labels:
         app: chatservice-microsservice
     spec:
       containers:
         - name: chatservice
-          image: paulopkl/imersao-chatservice:v1
+          image: paulopkl/imersao-chatservice:latest
           ports:
             - name: http
               containerPort: 8080
@@ -66,17 +70,17 @@ spec:
               protocol: TCP
           env:
             - name: DB_DRIVER
-              value: mysql
+              value: "mysql"
             - name: DB_HOST
-              value: chatservice-mysql-service
+              value: "chatservice-mysql-service"
             - name: DB_PORT
               value: "3306"
             - name: DB_USER
-              value: root
+              value: "root"
             - name: DB_PASSWORD
-              value: root
+              value: "root"
             - name: DB_NAME
-              value: chat_service
+              value: "chat_service"
             - name: WEB_SERVER_PORT
               value: "8080"
             - name: GRPC_SERVER_PORT

@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-webapp
+  name: webapp-mysql-service
 spec:
   selector:
     app: mysql-webapp
@@ -52,21 +52,25 @@ spec:
   selector:
     matchLabels:
       app: webapp
-  dependsOn:
+  # dependsOn:
     # - apiVersion: apps/v1 
     #   kind: Deployment
     #   name: webapp-mysql
-    - apiVersion: v1 
-      kind: Service
-      name: mysql-webapp
+    # - apiVersion: v1 
+    #   kind: Service
+    #   name: webapp-mysql-service
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9464"
+        prometheus.io/path: "/metrics"
       labels:
         app: webapp
     spec:
       containers:
         - name: webapp
-          image: paulopkl/imersao-gpt-webapp:v1
+          image: paulopkl/imersao-gpt-webapp:latest
           # resources:
           #   limits:
           #     memory: "128Mi"
@@ -78,9 +82,9 @@ spec:
           env:
             # Database Configs
             - name: DATABASE_URL
-              value: "mysql://root:root@webapp-mysql:3306/webchat"
+              value: "mysql://root:root@webapp-mysql-service:3306/webchat"
             - name: NEXTAUTH_URL
-              value: "http://locahost:3000/api/auth"
+              value: "http://ad58cec97735a4b4b9adeada87cb2ee4-1755713443.us-east-1.elb.amazonaws.com/api/auth"
             - name: NEXTAUT_SECRET
               value: "123456"
             # Keycloak Configs
@@ -89,22 +93,6 @@ spec:
             - name: KEYCLOAK_CLIENT_SECRET
               value: "n9E5OvUhDEu1pf9csH2w86VyQjpSBqq8"
             - name: KEYCLOAK_ISSUER
-              value: "http://keycloak-service:8080/realms/master"
+              value: "http://a1aaa122782af4ffe8334502a05ea0bd-501327221.us-east-1.elb.amazonaws.com/realms/master"
             - name: CHATSERVICE_URL
               value: "chatservice-service-microsservice:50051"
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webapp
-spec:
-  selector:
-    app: webapp
-  type: NodePort
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: 3000
-      nodePort: 30000

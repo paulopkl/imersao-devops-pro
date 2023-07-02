@@ -67,8 +67,11 @@ jobs:
         with:
           manifests: |
             k8s/deploy-chatservice.yaml
+            k8s/deploy-webapp-service.yaml
+            k8s/deploy-webapp-application.yaml
           images: |
             ${{ secrets.DOCKER_HUB_USER }}/imersao-chatservice:v${{ github.run_number }}
+            ${{ secrets.DOCKER_HUB_USER }}/imersao-gpt-webapp:v${{ github.run_number }}
 
       # - name: Authentication AWS CLI
       #   run: echo "Execute 'kubectl apply' command"
