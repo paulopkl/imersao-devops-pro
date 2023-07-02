@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  ci:
+  CI:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,3 +18,23 @@ jobs:
         
       - name: Docker build webapp
         run: echo "Docker build webapp"
+
+  CD:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Authentication AWS CLI
+        run: echo "Configure the AWS Configure"
+
+      - name: Authentication AWS CLI
+        run: echo "Configure the Kubectl"
+
+      - name: Authentication AWS CLI
+        run: echo "Configure the Kubectl"
+
+      - name: Authentication AWS CLI
+        run: Deploy applications
+
+      - name: Authentication AWS CLI
+        run: echo "Execute 'kubectl apply' command"
