@@ -17,10 +17,6 @@ spec:
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:21.0
-          # resources:
-          #   limits:
-          #     memory: "1000Mi"
-          #     cpu: "5000m"
           args: ["start-dev"] # Devel environment
           env:
             - name: KEYCLOAK_ADMIN
@@ -43,9 +39,9 @@ metadata:
 spec:
   selector:
     app: keycloak
-  type: NodePort
+  type: LoadBalancer
   ports:
-    - name: http
-      port: 8080
+    - name: "http"
+      protocol: TCP
+      port: 80
       targetPort: 8080
-      nodePort: 30001
