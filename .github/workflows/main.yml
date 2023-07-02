@@ -1,0 +1,17 @@
+name: CI-CD
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+  
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Docker build chatsevice
+        run: echo "Docker build chatservice"
+        
+      - name: Docker build webapp
+        run: echo "Docker build webapp"
