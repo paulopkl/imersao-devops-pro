@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatservice-mysql-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatservice-mysql
+  template:
+    metadata:
+      labels:
+        app: chatservice-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          ports:
+            - containerPort: 3306
+          # resources:
+          #   limits:
+          #     memory: "1000Mi"
+          #     cpu: "5000m"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "chat_service"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatservice-mysql-service
+spec:
+  selector:
+    app: chatservice-mysql
+  ports:
+    - port: 3306
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatservice-deploy-microsservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatservice-microsservice
+  template:
+    metadata:
+      labels:
+        app: chatservice-microsservice
+    spec:
+      containers:
+        - name: chatservice
+          image: paulopkl/imersao-chatservice:v1
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: grpc
+              containerPort: 50051
+              protocol: TCP
+          env:
+            - name: DB_DRIVER
+              value: mysql
+            - name: DB_HOST
+              value: chatservice-mysql-service
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: root
+            - name: DB_NAME
+              value: chat_service
+            - name: WEB_SERVER_PORT
+              value: "8080"
+            - name: GRPC_SERVER_PORT
+              value: "50051"
+            - name: INITIAL_CHAT_MESSAGE
+              value: Seu nome é Jarvis. Você é a inteligência artificial da iniciativa DevOps && Cloud. Você da suporte a programadores e profissionais de infraestrutura.
+            - name: OPENAI_API_KEY
+              value: sk-0000
+            - name: MODEL
+              value: gpt-3.5-turbo
+            # - name: MODEL_MAX_TOKENS
+            #   value: "4096"
+            # - name: TEMPERATURE
+            #   value: "0.2"
+            # - name: TOP_P
+            #   value: "0.2"
+            # - name: "N"
+            #   value: "1"
+            # - name: MAX_TOKENS
+            #   value: "300"
+            - name: AUTH_TOKEN
+              value: "123456"
+          # resources:
+          #   limits:
+          #     memory: "1000Mi"
+          #     cpu: "5000m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatservice-service-microsservice
+spec:
+  selector:
+    app: chatservice-microsservice
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    - name: grpc
+      port: 50051
+      targetPort: 50051
+      protocol: TCP

@@ -1,0 +1,5 @@
+*.bk
+
+**/**/chatgtp-api-key.txt
+**/**/node_modules
+
